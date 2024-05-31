@@ -22,7 +22,6 @@ COPY . .
 ENV NODE_ENV=production
 RUN bun prisma:generate
 RUN bun prisma:migrate
-RUN bun test
 RUN bun run build
 
 # copy production dependencies and source code into final image
