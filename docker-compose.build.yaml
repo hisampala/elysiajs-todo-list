@@ -1,0 +1,9 @@
+version: "3"
+services:
+  todo-list:
+    container_name:  todo_list_api
+    image:  devpala/todolistapi:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    platform: linux/amd64
