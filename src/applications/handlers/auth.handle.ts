@@ -4,6 +4,7 @@ import Elysia from "elysia";
 import * as service from "../../core/services";
 import { AuthInput, AuthInputType } from "../../types/AuthInput";
 import { CookieRequest } from "../../types/CookieReq";
+import * as guards from "../guards";
 import * as middleware from "../middleware";
 export const auth_handler = (app: Elysia<"/auth">) => {
   return app
@@ -11,6 +12,19 @@ export const auth_handler = (app: Elysia<"/auth">) => {
       cookie: CookieRequest,
       beforeHandle: middleware.authorization
     })
+    .get(
+      "/v1/me",
+      async ({ store }) => {
+        const program = service.get_item_by_id(store["user_id"]);
+        const result =  await Effect.runPromise(program);
+        delete result.refresh_token
+        return result;
+      },
+      {
+        cookie: CookieRequest,
+        beforeHandle: guards.token_guard
+      }
+    )
     .post(
       "/v1",
       async ({ body, headers, cookie: { token, refresh_token } }) => {

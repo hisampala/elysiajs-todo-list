@@ -5,7 +5,7 @@ import { AuthInputType } from "../../../types/AuthInput";
 import * as config from "../../config";
 import { JWTITEMType, JWTType, REFRESH_JWTType } from "../../model";
 import * as service_users from "../users";
-import * as errors from "./error"
+import * as errors from "./error";
 const auth = (item: AuthInputType) =>
   pipe(
     service_users.get_item_by_username(item.username),
@@ -52,48 +52,48 @@ const generate_token_refresh_token = (token: string, user_agent: string) => {
 };
 const verify_jwt_token = (jwt: string) => {
   return Effect.tryPromise({
-    try:async()=>{
+    try: async () => {
       const env = config.env();
       const token = verify(jwt, env.SECERT_KEY);
       const token_item = token as JWTType;
-      return token_item
+      return token_item;
     },
-    catch:(err:unknown)=> new errors.verify_jwt_token_error((err as Error).message)
-  })
-  
+    catch: (err: unknown) => new errors.verify_jwt_token_error((err as Error).message)
+  });
 };
-const verify_jwt_refresh_token_process = (jwt:string)=>{
+const verify_jwt_refresh_token_process = (jwt: string) => {
   const env = config.env();
   verify(jwt, env.SECERT_KEY);
-  return jwt
-}
-const generate_token_and_refresh_token_and_update = (user_agent:string)=>{
-  return (user:Users)=>{
+  return jwt;
+};
+const generate_token_and_refresh_token_and_update = (user_agent: string) => {
+  return (user: Users) => {
     return Effect.tryPromise({
-      try:async()=>{
-        const new_token_with_refresh_token =  generate_token_and_refresh_token(user as unknown as Users, user_agent);
-        const program_update_refresh_token = update_refresh_token(user.id,new_token_with_refresh_token)
+      try: async () => {
+        const new_token_with_refresh_token = generate_token_and_refresh_token(user as unknown as Users, user_agent);
+        const program_update_refresh_token = update_refresh_token(user.id, new_token_with_refresh_token);
         await Effect.runPromise(program_update_refresh_token);
-        return new_token_with_refresh_token
+        return new_token_with_refresh_token;
       },
-      catch:(err:unknown)=> new errors.generate_token_and_refresh_token_and_update_error((err as Error).message)
-    })
-  }
-  
-}
-const verify_refreshtoken_is_matchs = (jwt:string)=>{
-  return (user:Users)=>{
+      catch: (err: unknown) => new errors.generate_token_and_refresh_token_and_update_error((err as Error).message)
+    });
+  };
+};
+const verify_refreshtoken_is_matchs = (jwt: string) => {
+  return (user: Users) => {
+    // console.log(user)
     if (!user || !user.refresh_token) throw new Error("notfount refreshtoken");
-    const  refresh_token = verify_jwt_refresh_token_process(jwt)
+    const refresh_token = verify_jwt_refresh_token_process(jwt);
     if (refresh_token !== user.refresh_token) throw new Error("refreshtoken is not matches");
-    return user
-  }
-
-}
-const verify_jwt_refresh_token =  (jwt: string, token_item: JWTType, user_agent: string) => {
-  return pipe(service_users.get_item_by_id(token_item.id),
-  Effect.map(verify_refreshtoken_is_matchs(jwt)),
-  Effect.flatMap(generate_token_and_refresh_token_and_update(user_agent)))
+    return user;
+  };
+};
+const verify_jwt_refresh_token = (jwt: string, token_item: JWTType, user_agent: string) => {
+  return pipe(
+    service_users.get_item_by_id(token_item.id),
+    Effect.map(verify_refreshtoken_is_matchs(jwt)),
+    Effect.flatMap(generate_token_and_refresh_token_and_update(user_agent))
+  );
 };
 const update_refresh_token = (user_id: string, tokens: JWTITEMType) => service_users.update_item(user_id, { refresh_token: tokens.refresh_token });
 export { auth, verify_jwt_refresh_token, verify_jwt_token };
