@@ -14,8 +14,10 @@
     "@prisma/adapter-libsql": "^5.14.0",
     "@prisma/client": "5.14.0",
     "@types/crypto-js": "^4.2.2",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/uuid": "^9.0.8",
     "crypto-js": "^4.2.0",
+    "date-fns": "^3.6.0",
     "effect": "^3.2.6",
     "elysia": "latest",
     "husky": "^9.0.11",
@@ -23,7 +25,8 @@
     "prettier": "^3.2.5",
     "prettier-plugin-organize-imports": "^3.2.4",
     "prisma-typebox-generator": "^2.1.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "bun-types": "latest",
