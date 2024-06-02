@@ -4,16 +4,20 @@ import * as services from "../../core/services";
 import { UsersInputType } from "../../types";
 import { UsersCreateInput } from "../../types/UsersCreateInput";
 import { UsersUpdateInput } from "../../types/UsersUpdateInput";
-import * as guards from '../guards';
+import * as guards from "../guards";
 export const users_handler = (app: Elysia<"/users">) => {
   return app
-    .get("/v1", async (c) => {
-      const program = services.get_all_item();
-      const result = await Effect.runPromise(program);
-      return result;
-    },{
-      beforeHandle: guards.token_guard
-    })
+    .get(
+      "/v1",
+      async (c) => {
+        const program = services.get_all_item();
+        const result = await Effect.runPromise(program);
+        return result;
+      },
+      {
+        beforeHandle: guards.token_guard
+      }
+    )
     .get("/v1/:id", async ({ params }) => {
       const program = services.get_item_by_id(params.id);
       const result = await Effect.runPromise(program);
@@ -28,7 +32,7 @@ export const users_handler = (app: Elysia<"/users">) => {
         return result;
       },
       {
-        body: UsersCreateInput,
+        body: UsersCreateInput
         // beforeHandle: guards.token_guard
       }
     )
