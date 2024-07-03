@@ -1,4 +1,2 @@
-import { PrismaClient } from "@prisma/client";
-export const db = () => {
-  return new PrismaClient({ log: ["error", "info"] });
-};
+import { PrismaClient } from "@PrismClient";
+export const db = () => new PrismaClient({ log: ["error", "info"] });

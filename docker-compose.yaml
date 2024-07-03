@@ -1,0 +1,8 @@
+version: "3"
+services:
+  todo-list:
+    container_name:  todo_list_api
+    image:  devpala/todolistapi:latest
+    ports:
+      - 3000:3000
+    platform: linux/amd64
