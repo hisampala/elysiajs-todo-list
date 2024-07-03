@@ -27,7 +27,7 @@ RUN bun run build
 # copy production dependencies and source code into final image
 FROM base AS release
 WORKDIR /app
-COPY --from=prerelease /app/node_modules node_modules
+# COPY --from=prerelease /app/node_modules node_modules
 # COPY --from=prerelease /usr/src/app/index.ts ./
 # COPY --from=prerelease /usr/src/app/package.json ./
 COPY --from=prerelease /app/build ./

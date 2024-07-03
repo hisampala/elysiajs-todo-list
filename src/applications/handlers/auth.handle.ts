@@ -16,8 +16,8 @@ export const auth_handler = (app: Elysia<"/auth">) => {
       "/v1/me",
       async ({ store }) => {
         const program = service.get_item_by_id(store["user_id"]);
-        const result =  await Effect.runPromise(program);
-        delete result.refresh_token
+        const result = await Effect.runPromise(program);
+        delete result.refresh_token;
         return result;
       },
       {
